@@ -54,12 +54,12 @@ export class FetchFeed {
   public async main(): Promise<void> {
     try {
       const newPreviousItems = [];
+      const previousItems = await this._readPreviousItems();
       for (const url of feedUrls) {
         const feed = await this.parser.parseURL(url);
         if (!feed.items || feed.items.length === 0) {
           continue;
         }
-        const previousItems = await this._readPreviousItems();
         for (const item of feed.items) {
           if (!item.link) {
             continue;
@@ -72,7 +72,9 @@ export class FetchFeed {
           newPreviousItems.push(item.link);
         }
       }
-      await this._savePreviousItems(JSON.stringify(newPreviousItems, null, 2));
+      if (JSON.stringify(previousItems) !== JSON.stringify(newPreviousItems)) {
+        await this._savePreviousItems(JSON.stringify(newPreviousItems, null, 2));
+      }
     } catch (error) {
       console.error('Error fetching or parsing feed:', error);
     }
