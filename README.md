@@ -31,6 +31,12 @@ pnpm build
 node dist/index.js
 ```
 
+### dry-run
+
+```
+node dist/index.js --dry-run
+```
+
 ## Usage GitHub Actions
 
 If you intend to run this project using GitHub Actions, you will need to configure environment variables.
