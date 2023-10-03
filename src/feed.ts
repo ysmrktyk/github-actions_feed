@@ -21,6 +21,7 @@ export class FetchFeed {
   private s3Client: S3Client;
   private bucket: string;
   private fileName = previousItemsFileName;
+  private dryRunMode: boolean;
 
   constructor() {
     if (!process.env.DISCORD_WEBHOOK_URL) {
@@ -49,6 +50,7 @@ export class FetchFeed {
         secretAccessKey: process.env.CLOUDFLARE_R2_SECRET_ACCESS_KEY,
       },
     });
+    this.dryRunMode = process.argv.includes('--dry-run');
   }
 
   public async main(): Promise<void> {
@@ -68,11 +70,15 @@ export class FetchFeed {
             newPreviousItems.push(item.link);
             continue;
           }
-          await this._sendToDiscord(item);
+          if (this.dryRunMode) {
+            console.log(`Dry run: Sending to Discord: [${item.title}](${item.link})`);
+          } else {
+            await this._sendToDiscord(item);
+          }
           newPreviousItems.push(item.link);
         }
       }
-      if (JSON.stringify(previousItems) !== JSON.stringify(newPreviousItems)) {
+      if (!this.dryRunMode && JSON.stringify(previousItems) !== JSON.stringify(newPreviousItems)) {
         await this._savePreviousItems(JSON.stringify(newPreviousItems, null, 2));
       }
     } catch (error) {
