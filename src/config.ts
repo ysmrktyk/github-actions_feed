@@ -5,6 +5,5 @@ export const feedUrls = [
   'https://devblogs.microsoft.com/typescript/feed/',
   'https://techblog.lycorp.co.jp/ja/feed/index.xml?_ebx=1xjuffz95rr.1699030896.7szlabs',
   'https://engineering.mercari.com/blog/feed.xml',
-  'https://trends.google.co.jp/trends/trendingsearches/daily/rss?geo=JP',
 ];
 export const previousItemsFileName = 'previousItems.json';
